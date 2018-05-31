@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="buttonHeight">52dip</dimen> 
+	<dimen name="buttonWidth">81dip</dimen> 
+
+	<string name="F1">F1</string>
+    <string name="F2">F2</string>
+    <string name="F3">F3</string>
+    <string name="F4">F4</string>
+    
+    <string name="A">A</string>
+    <string name="B">B</string>
+    <string name="C">C</string>
+    <string name="D">D</string>    
+    
+    <string name="KEY1">1</string>
+    <string name="KEY2">2</string>
+    <string name="KEY3">3</string>
+    <string name="KEY4">4</string>
+    
+    <string name="KEY5">5</string>
+    <string name="KEY6">6</string>
+    <string name="KEY7">7</string>
+    <string name="KEY8">8</string>  
+    
+    <string name="KEY9">9</string>
+    <string name="KEY0">0</string>
+    <string name="KEYDOT">.</string>
+    <string name="KEYALPHA">ALPHA</string>   
+    
+    <string name="KEYENTER">ENTER</string>
+    <string name="KEYCANCEL">CANCEL</string>
+    <string name="KEYCLS">CLEAR</string>
+    <string name="KEYBACKSPACE">BCKSP</string>
+    
+    <string name="KEYINQURY">INQURY</string>
+    <string name="KEYUP">UP</string>
+    <string name="KEYDOWN">DOWN</string>
+    <string name="KEYMENU">MENU</string>
+</resources>

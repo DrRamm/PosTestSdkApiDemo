@@ -1,10 +1,14 @@
 package test.apidemo.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.storage.StorageManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +28,13 @@ import vpos.apipackage.PosApiHelper;
  */
 
 public class UpgradeOsActivity extends Activity {
+
+    public static String[] MY_PERMISSIONS_STORAGE = {
+            "android.permission.READ_EXTERNAL_STORAGE",
+            "android.permission.WRITE_EXTERNAL_STORAGE",
+            "android.permission.MOUNT_UNMOUNT_FILESYSTEMS"};
+
+    public static final int REQUEST_EXTERNAL_STORAGE = 1;
 
     public static final String TAG = UpgradeOsActivity.class.getSimpleName();
 
@@ -51,7 +62,37 @@ public class UpgradeOsActivity extends Activity {
 
     public void OnClickUpgradeOs(View view) {
 
-        synchronized (this){
+            //检测是否有写的权限
+            //Check if there is write permission
+            int checkPermission = ContextCompat.checkSelfPermission(UpgradeOsActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (checkPermission != PackageManager.PERMISSION_GRANTED) {
+                // 没有写文件的权限，去申请读写文件的权限，系统会弹出权限许可对话框
+                //Without the permission to Write, to apply for the permission to Read and Write, the system will pop up the permission dialog
+                ActivityCompat.requestPermissions(UpgradeOsActivity.this, MY_PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+            }
+            else{
+                upgradeOS();
+            }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(UpgradeOsActivity.this,"no permission ,plz to request~",Toast.LENGTH_SHORT).show();
+                ActivityCompat.requestPermissions(UpgradeOsActivity.this, MY_PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+            }
+            else{
+                upgradeOS();
+            }
+        }
+    }
+
+    public void upgradeOS(){
+        synchronized (this) {
 
             ivHome.setEnabled(false);
 
@@ -74,10 +115,7 @@ public class UpgradeOsActivity extends Activity {
             }
 
             ivHome.setEnabled(true);
-
-
         }
-
     }
 
     @Override

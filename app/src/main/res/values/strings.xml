@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PosTetSdkDemo</string>
+    <string name="app_name">PosSdkDemo</string>
     <string name="action_settings">Settings</string>
     <string name="spacebar">Spacebar</string>
     <string name="start">Start</string>
@@ -52,6 +52,12 @@
     <string name="upgradeZip">Step 1: to rename the file that needs to be upgraded to "upgrade.zip";\n\nStep 2: place "upgrade.zip" in the file system and directory;\n\nStep 3: click the button to upgrade;</string>
     <string name="back">BACK</string>
     <string name="more">more</string>
+    <string name="scanContinuousMode">Continuous</string>
+    <string name="scanNormalMode">Normal</string>
+    <string name="scanStart">Start</string>
+    <string name="scanStop">Stop</string>
+    <string name="scanDisable">Close</string>
+    <string name="scanEnable">Open</string>
 
 
     <string name="ok">OK</string>

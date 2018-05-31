@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PosTestSdkApiDemo.iml" filepath="$PROJECT_DIR$/PosTestSdkApiDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mvl/mvl.iml" filepath="$PROJECT_DIR$/mvl/mvl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/permissontest/permissontest.iml" filepath="$PROJECT_DIR$/permissontest/permissontest.iml" />
       <module fileurl="file://$PROJECT_DIR$/printertest_new/printertest_new.iml" filepath="$PROJECT_DIR$/printertest_new/printertest_new.iml" />
     </modules>
   </component>

@@ -77,9 +77,9 @@ public class MainActivity extends Activity {
                 getResources().getDrawable(R.mipmap.print),
                 getResources().getDrawable(R.mipmap.sys),
                 getResources().getDrawable(R.mipmap.scan),
-                getResources().getDrawable(R.mipmap.upgrade),
-                getResources().getDrawable(R.mipmap.emv),
-                getResources().getDrawable(R.mipmap.more)
+                getResources().getDrawable(R.mipmap.upgrade)
+                ,getResources().getDrawable(R.mipmap.emv)
+                ,getResources().getDrawable(R.mipmap.more)
         };
 
         final String[] itemTitles = {

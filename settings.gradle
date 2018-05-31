@@ -1,1 +1,1 @@
-include ':app', ':printertest_new'
+include ':app', ':printertest_new', ':permissontest', ':mvl'

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enterAmount">请输入金额</string>
+    <string name="quickPay">快速支付</string>
+    <string name="transAmtExceed">交易超限</string>
+    <string name="tryOtherWay">请用其它界面</string>
+    <string name="insertSwipeCard">请插卡/刷非接卡</string>
+    <string name="transAmt">交易金额</string>
+    <string name="transProcessing">交易处理中</string>
+    <string name="plsRemoveCard">请移卡</string>
+    <string name="transApproved">交易批准</string>
+    <string name="transDeclined">交易拒绝</string>
+    
+    <string name="balance">余额</string>
+    <string name="qpbocTest">qPBOC Level2 Demo</string>
+    <string name="dash">=================</string>
+    <string name="queryBalance">余额查询</string>
+    <string name="checkTransLog">查看交易记录</string>
+    <string name="multiCard">请出示单一卡片</string>
+    <string name="processing">处理中......</string>
+    <string name="transFail">交易失败</string>
+    <string name="amount">金额:</string>
+    
+    <string name="setup">设置</string>
+    <string name="transType">交易类型</string>
+    <string name="onlinePinTrans">Online PIN 交易</string>
+    <string name="offlineTrans">offline 交易</string>
+</resources>

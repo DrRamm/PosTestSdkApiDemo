@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="app_name">PosSdkTestDemo</string>
+    <string name="app_name">PosSdkDemo</string>
     <string name="action_settings">设置</string>
     <string name="spacebar">空格</string>
     <string name="select">选择类型 : </string>
@@ -55,7 +55,12 @@
     <string name="upgradeZip">第一步 : 请将需要升级系统的文件，命名为“upgrade.zip”；\n\n第二步 : 将“upgrade.zip”放置在文件系统根目录；\n\n第三步 : 点击按钮，进行升级；</string>
     <string name="back">返回</string>
     <string name="more">更多</string>
-
+    <string name="scanContinuousMode">连续模式</string>
+    <string name="scanNormalMode">正常模式</string>
+    <string name="scanStart">开始</string>
+    <string name="scanStop">停止</string>
+    <string name="scanDisable">禁用扫描</string>
+    <string name="scanEnable">启用扫描</string>
 
     <string name="ok">确定</string>
     <string name="cancel">取消</string>

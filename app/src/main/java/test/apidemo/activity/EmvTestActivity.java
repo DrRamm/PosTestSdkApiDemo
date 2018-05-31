@@ -38,6 +38,7 @@ public class EmvTestActivity extends Activity {
     public static final int TYPE_TEST_EMV = 1;
     public static final int TYPE_PIN_BLOCK = 2;
     public static final int TYPE_SHOW_PAD = 3;
+    public static final int TYPE_TEST_PK = 4;
 
     private EMVCOHelper emvcoHelper = EMVCOHelper.getInstance();
 
@@ -46,12 +47,14 @@ public class EmvTestActivity extends Activity {
     boolean isOpen = false;
 
     byte[] TermParabuf = {
-            (byte) 0xDF, 0x18, 0x07, (byte) 0xF4, (byte) 0xE0, (byte) 0xF8, (byte) 0xE4, (byte) 0xEF, (byte) 0xF2, (byte) 0xA0, (byte) 0x9F, 0x35, 0x01, 0x22, (byte) 0x9F, 0x33, 0x03, (byte) 0xE0, 0x40, 0x00, (byte) 0x9F, 0x40, 0x05, 0x60,
+            (byte) 0xDF, 0x18, 0x07, (byte) 0xF4, (byte) 0xE0, (byte) 0xF8, (byte) 0xE4, (byte) 0xEF, (byte) 0xF2, (byte) 0xA0, (byte) 0x9F, 0x35, 0x01, 0x22, (byte) 0x9F, 0x33, 0x03, (byte) 0xE0, (byte) 0x78, (byte) 0xC8, (byte) 0x9F, 0x40, 0x05, 0x60,
             0x00, (byte) 0xF0, (byte) 0xF0, 0x01, (byte) 0xDF, 0x19, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xDF, 0x26, 0x0F, (byte) 0x9F, 0x02, 0x06, 0x5F, 0x2A, 0x02,
             (byte) 0x9A, 0x03, (byte) 0x9C, 0x01, (byte) 0x95, 0x05, (byte) 0x9F, 0x37, 0x04, (byte) 0xDF, 0x40, 0x01, (byte) 0xFF, (byte) 0x9F, 0x39, 0x01, 0x05, (byte) 0x9F, 0x1A, 0x02, 0x01, 0x56, (byte) 0x9F, 0x1E,
             0x08, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, (byte) 0x88, (byte) 0xDF, 0x42, 0x01, 0x00, (byte) 0xDF, 0x43, 0x01, 0x00, (byte) 0xDF, 0x44, 0x01, 0x00, (byte) 0xDF, 0x45, 0x01,
             0x00, (byte) 0xDF, 0x46, 0x01, 0x01, (byte) 0x9F, 0x66, 0x04, 0x74, 0x00, 0x00, (byte) 0x80, 0x00, (byte) 0xDF, 0x47, 0x05, (byte) 0xAF, 0x61, (byte) 0xFF, 0x0C, 0x07
+
     };
+
     byte[] aid1buf = {
             (byte) 0x9F, 0x06, 0x07, (byte) 0xA0, 0x00, 0x00, 0x00, 0x03, 0x10, 0x10, (byte) 0x9F, 0x01, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, (byte) 0x9F, 0x09, 0x02, 0x00,
             0x20, (byte) 0x9F, 0x15, 0x02, 0x00, 0x01, (byte) 0x9F, 0x16, 0x08, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, (byte) 0x88, (byte) 0x9F, 0x4E, 0x12, (byte) 0xD2, (byte) 0xF8, (byte) 0xC1,
@@ -63,31 +66,51 @@ public class EmvTestActivity extends Activity {
             0x05, 0x00, 0x00, (byte) 0xDF, 0x20, 0x06, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, (byte) 0xDF, 0x21, 0x06, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, (byte) 0x9F, 0x7B,
             0x06, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00
     };
+
     byte[] capk1buf = {
-            (byte) 0x9f, 0x22, 0x01, (byte) 0x80, (byte) 0x9f, 0x06, 0x05, (byte) 0xa0,
-            0x00, 0x00, 0x03, 0x33, (byte) 0xdf, 0x05, 0x08, 0x32,
-            0x30, 0x31, 0x38, 0x30, 0x35, 0x30, 0x31, (byte) 0xdf,
-            0x06, 0x01, 0x01, (byte) 0xdf, 0x07, 0x01, 0x01, (byte) 0xdf,
-            0x04, 0x03, 0x01, 0x00, 0x01, (byte) 0xdf, 0x03, 0x14,
-            (byte) 0xa5, (byte) 0xe4, 0x4b, (byte) 0xb0, (byte) 0xe1, (byte) 0xfa, 0x4f, (byte) 0x96,
-            (byte) 0xa1, 0x17, 0x09, 0x18, 0x66, 0x70, (byte) 0xd0, (byte) 0x83,
-            0x50, 0x57, (byte) 0xd3, 0x5e, (byte) 0xdf, 0x02, (byte) 0x81, (byte) 0x80,
-            (byte) 0xcc, (byte) 0xdb, (byte) 0xa6, (byte) 0x86, (byte) 0xe2, (byte) 0xef, (byte) 0xb8, 0x4c,
-            (byte) 0xe2, (byte) 0xea, 0x01, 0x20, (byte) 0x9e, (byte) 0xeb, 0x53, (byte) 0xbe,
-            (byte) 0xf2, 0x1a, (byte) 0xb6, (byte) 0xd3, 0x53, 0x27, 0x4f, (byte) 0xf8,
-            0x39, 0x1d, 0x70, 0x35, (byte) 0xd7, 0x6e, 0x21, 0x56,
-            (byte) 0xca, (byte) 0xed, (byte) 0xd0, 0x75, 0x10, (byte) 0xe0, 0x7d, (byte) 0xaf,
-            (byte) 0xca, (byte) 0xca, (byte) 0xbb, 0x7c, (byte) 0xcb, 0x09, 0x50, (byte) 0xba,
-            0x2f, 0x0a, 0x3c, (byte) 0xec, 0x31, 0x3c, 0x52, (byte) 0xee,
-            0x6c, (byte) 0xd0, (byte) 0x9e, (byte) 0xf0, 0x04, 0x01, (byte) 0xa3, (byte) 0xd6,
-            (byte) 0xcc, 0x5f, 0x68, (byte) 0xca, 0x5f, (byte) 0xcd, 0x0a, (byte) 0xc6,
-            0x13, 0x21, 0x41, (byte) 0xfa, (byte) 0xfd, 0x1c, (byte) 0xfa, 0x36,
-            (byte) 0xa2, 0x69, 0x2d, 0x02, (byte) 0xdd, (byte) 0xc2, 0x7e, (byte) 0xda,
-            0x4c, (byte) 0xd5, (byte) 0xbe, (byte) 0xa6, (byte) 0xff, 0x21, (byte) 0x91, 0x3b,
-            0x51, 0x3c, (byte) 0xe7, (byte) 0x8b, (byte) 0xf3, 0x3e, 0x68, 0x77,
-            (byte) 0xaa, 0x5b, 0x60, 0x5b, (byte) 0xc6, (byte) 0x9a, 0x53, 0x4f,
-            0x37, 0x77, (byte) 0xcb, (byte) 0xed, 0x63, 0x76, (byte) 0xba, 0x64,
-            (byte) 0x9c, 0x72, 0x51, 0x6a, 0x7e, 0x16, (byte) 0xaf, (byte) 0x85
+            (byte) 0x9f, 0x22, 0x01, (byte) 0x57,
+            (byte) 0x9f, 0x06, 0x05, (byte) 0xa0, 0x00, 0x00, 0x00, 0x03,
+            (byte) 0xdf, 0x05, 0x08, 0x32, 0x30, 0x32, 0x30, 0x31, 0x32, 0x33, 0x31,
+            (byte) 0xdf, 0x06, 0x01, 0x01,
+            (byte) 0xdf, 0x07, 0x01, 0x01,
+            (byte) 0xdf, 0x04, 0x03, 0x01, 0x00, 0x01,
+            (byte) 0xdf, 0x03, 0x14, 0x25, 0x1A, 0x5F, 0x5D,
+            (byte) 0xE6, 0x1C, (byte) 0xF2, (byte) 0x8B, 0x5C, 0x6E, 0x2B, 0x58, 0x07,
+            (byte) 0xC0, 0x64, 0x4A,
+            0x01, (byte) 0xD4, 0x6F, (byte) 0xF5,
+            (byte) 0xdf, 0x02, (byte) 0x60,
+            (byte) 0x94, 0x2B, 0x7F, 0x2B, (byte) 0xA5, (byte) 0xEA, 0x30, 0x73, 0x12, (byte) 0xB6, 0x3D, (byte) 0xF7, 0x7C, 0x52, 0x43, 0x61,
+            (byte) 0x8A, (byte) 0xCC, 0x20, 0x02, (byte) 0xBD, 0x7E, (byte) 0xCB, 0x74, (byte) 0xD8, 0x21, (byte) 0xFE, 0x7B, (byte) 0xDC, 0x78, (byte) 0xBF, 0x28,
+            (byte) 0xF4, (byte) 0x9F, 0x74, 0x19, 0x0A, (byte) 0xD9, (byte) 0xB2, 0x3B, (byte) 0x97, 0x13, (byte) 0xB1, 0x40, (byte) 0xFF, (byte) 0xEC, 0x1F, (byte) 0xB4,
+            (byte) 0x29, (byte) 0xD9, 0x3F, 0x56, (byte) 0xBD, (byte) 0xC7, (byte) 0xAD, (byte) 0xE4, (byte) 0xAC, 0x07, 0x5D, 0x75, 0x53, 0x2C, 0x1E, 0x59,
+            (byte) 0x0B, 0x21, (byte) 0x87, 0x4C, 0x79, 0x52, (byte) 0xF2, (byte) 0x9B, (byte) 0x8C, 0x0F, 0x0C, 0x1C, (byte) 0xE3, (byte) 0xAE, (byte) 0xED, (byte) 0xC8,
+            (byte) 0xDA, 0x25, 0x34, 0x31, 0x23, (byte) 0xE7, 0x1D, (byte) 0xCF, (byte) 0x86, (byte) 0xC6, (byte) 0x99, (byte) 0x8E, 0x15, (byte) 0xF7, 0x56, (byte) 0xE3
+    };
+
+    byte[] aidTmp = {
+            (byte) 0x9F, 0x06, 0x07, (byte) 0xA0, 0x00, 0x00, 0x00, 0x04,
+            0x10, 0x10, (byte) 0x9F, 0x1C, 0x04, 0x11, 0x00, 0x00,
+            0x11, (byte) 0x9F, 0x16, 0x0F, 0x30, 0x30, 0x30, 0x30,
+            0x30, 0x30, 0x30, 0x31, 0x30, 0x30, 0x30, 0x30,
+            0x31, 0x32, 0x35, (byte) 0x9F, 0x15, 0x02, 0x12, 0x34,
+            (byte) 0x9F, 0x4E, 0x06, 0x53, 0x48, 0x4F, 0x50, 0x20,
+            0x31, (byte) 0x9F, 0x01, 0x06, 0x01, 0x23, 0x45, 0x67,
+            (byte) 0x89, 0x10, (byte) 0x9F, 0x09, 0x02, 0x00, (byte) 0x96, (byte) 0xDF,
+            0x11, 0x05, (byte) 0xCC, 0x00, 0x00, 0x00, 0x00, (byte) 0xDF,
+            0x13, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xDF,
+            0x12, 0x05, (byte) 0xCC, 0x00, 0x00, 0x00, 0x00, (byte) 0xDF,
+            0x14, 0x03, (byte) 0x9F, 0x37, 0x04, (byte) 0xDF, 0x15, 0x04,
+            0x00, 0x00, (byte) 0x9C, 0x40, (byte) 0xDF, 0x16, 0x01, 0x32,
+            (byte) 0xDF, 0x17, 0x01, 0x14, (byte) 0xDF, 0x18, 0x01, 0x01,
+            (byte) 0x9F, 0x1B, 0x04, 0x00, 0x01, (byte) 0x86, (byte) 0xA0, 0x5F,
+            0x2A, 0x02, 0x08, 0x40, 0x5F, 0x36, 0x01, 0x02,
+            (byte) 0x9F, 0x3C, 0x02, 0x08, 0x40, (byte) 0x9F, 0x3D, 0x01,
+            0x02, (byte) 0x9F, 0x1D, 0x01, 0x01, (byte) 0xDF, 0x01, 0x01,
+            0x00, (byte) 0xDF, 0x19, 0x06, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x50, (byte) 0xDF, 0x20, 0x06, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x64, (byte) 0xDF, 0x21, 0x06, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x32, (byte) 0x9F, 0x7B, 0x06, 0x00,
+            0x00, 0x00, 0x00, 0x27, 0x10
     };
 
 
@@ -123,7 +146,7 @@ public class EmvTestActivity extends Activity {
         //enable the power key
         disableFunctionLaunch(false);
 
-        if(emvThread!=null){
+        if (emvThread != null) {
             emvThread.interrupt();
         }
     }
@@ -132,7 +155,10 @@ public class EmvTestActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if(emvThread!=null){
+        //add by liuhao 0529 close led
+        closeLed();
+
+        if (emvThread != null) {
             emvThread.interrupt();
         }
 
@@ -175,20 +201,76 @@ public class EmvTestActivity extends Activity {
 
     }
 
+    public void onClickTestPK(View view) {
+
+        Log.e(TAG, "onClickTestPK");
+
+        tvEmvMsg.setText("");
+
+        if (emvThread != null && !emvThread.isThreadFinished()) {
+            Log.e(TAG, "Thread is still running...");
+            return;
+        }
+        emvThread = new EmvThread(TYPE_TEST_PK);
+        emvThread.start();
+
+    }
+
 
     interface IBackFinish {
         void isBack();
     }
 
     IBackFinish mIBackFinish;
-    public void setIBackFinish(IBackFinish mIBackFinish){
-        this.mIBackFinish=mIBackFinish;
+
+    public void setIBackFinish(IBackFinish mIBackFinish) {
+        this.mIBackFinish = mIBackFinish;
     }
 
-    private boolean bIsBack=false;
+    private boolean bIsBack = false;
 
-    private EmvThread emvThread=null;
+    private EmvThread emvThread = null;
     private boolean m_bThreadFinished = true;
+
+
+    private int DetectCard() {
+        int rx = 0;
+        PosApiHelper posApiHelper = PosApiHelper.getInstance();
+        int ctl = posApiHelper.PiccOpen();
+        int mcr = posApiHelper.McrOpen();
+        byte[] atr = new byte[41];
+        if (mcr == 0)
+            posApiHelper.McrReset();
+        while (true) {
+            int res = posApiHelper.IccCheck((byte) 0);
+            if (res == 0) {
+                rx = 1;
+                break;
+            }
+            if (ctl == 0) {
+                byte[] ct = new byte[3];
+                byte[] sn = new byte[50];
+                if ((posApiHelper.PiccCheck((byte) 0x41, ct, sn) == 0) ||
+                        (posApiHelper.PiccCheck((byte) 0x42, ct, sn) == 0) ||
+                        (posApiHelper.PiccCheck((byte) 0x4D, ct, sn) == 0)) {
+                    rx = 2;
+                    break;
+                }
+            }
+            if (mcr == 0) {
+                if (posApiHelper.McrCheck() == 0) {
+                    rx = 3;
+                    break;
+                }
+            }
+        }
+        if ((ctl == 0) && (rx != 2)) // dont close if contactless interface detected
+            posApiHelper.PiccClose();
+        if (mcr == 0)
+            posApiHelper.McrClose();
+        return rx;
+    }
+
 
     class EmvThread extends Thread {
 
@@ -209,18 +291,107 @@ public class EmvTestActivity extends Activity {
                 int ret = 0;
 
                 switch (type) {
+
+                    case TYPE_TEST_PK:
+
+                        Tag5A_data = "";
+                        ret = emvcoHelper.EmvKeyPadInit(EmvTestActivity.this);
+                        if (ret != 0) {
+                            m_bThreadFinished = true;
+                            return;
+                        }
+                        short TagCardNo1 = 0x5A;
+                        int TagCardNo_len1;
+                        byte CardNoData1[] = new byte[56];
+
+                        short TagPIN1 = 0xBD;
+                        int PinData_len1;
+                        byte PinData1[] = new byte[56];
+
+                        emvcoHelper.EmvEnvParaInit();
+                        emvcoHelper.EmvSaveTermParas(TermParabuf, TermParabuf.length);
+                        emvcoHelper.EmvAddOneAIDS(aid1buf, aid1buf.length);
+                        emvcoHelper.EmvKernelInit(0, 3);
+                        emvcoHelper.EmvAddOneCAPK(capk1buf, capk1buf.length);
+
+                        int retType = DetectCard();
+                        Log.e("liuhao retType", retType + "");
+
+                        //mcr
+                        if (retType == 3) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvEmvMsg.setText("MCR...");
+                                }
+                            });
+                            m_bThreadFinished = true;
+                            return;
+                        }
+
+                        emvcoHelper.EmvSetTransType(2);
+                        emvcoHelper.EmvSetTransAmount(1);
+                        emvcoHelper.EmvSetCardType(retType); //1--CONTACT 2--CONTACTLESS
+                        Log.e("EMV", "EMV TEST");
+
+                        ret = emvcoHelper.EmvProcess(retType, 0); ////1--CONTACT 2--CONTACTLESS
+
+                        Log.e("EmvProcess", "ret = " + ret);
+
+                        if (ret < 0) {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    strEmvStatus = "EMV Termination";
+                                    tvEmvMsg.setText("EMV Termination");
+                                }
+                            });
+
+                            m_bThreadFinished = true;
+                            return;
+
+                        } else if (ret == 3) {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    strEmvStatus = "EMV  GOONLINE";
+                                }
+                            });
+                        }
+
+                        TagCardNo_len1 = emvcoHelper.EmvGetTagData(CardNoData1, 56, TagCardNo1);
+
+                        for (int i = 0; i < TagCardNo_len1; i++) {
+                            Tag5A_data += Integer.toHexString(CardNoData1[i] & 0xFF);
+                        }
+                        Log.e("liuhao Tag55", "-Tag5A_data=----" + Tag5A_data);
+
+                        PinData_len1 = emvcoHelper.EmvGetTagData(PinData1, 56, TagPIN1);
+                        final String TagPin_data1 = new String(PinData1, 0, PinData_len1);
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                tvEmvMsg.setText(strEmvStatus + "\n\nCardNO:" + Tag5A_data + "\n\n" + "PIN:" + TagPin_data1);
+                            }
+                        });
+                        Log.e("liuhao Tag55", "-TagPin_data=----" + TagPin_data1);
+
+                        emvcoHelper.EmvFinal();
+
+
+                        break;
+
                     case TYPE_TEST_EMV:
 
-                        int mCardType=-1;
+                        Log.e("liuhao", "TYPE_TEST_EMV");
+
+                        int mCardType = -1;
 
                         byte picc_mode = 'M';
                         byte cardtype[] = new byte[3];
                         byte serialNo[] = new byte[50];
 
                         final long time = System.currentTimeMillis();
-                        while (System.currentTimeMillis() < time + 30*1000) {
+                        while (System.currentTimeMillis() < time + 30 * 1000) {
 
-                            if(bIsBack){
+                            if (bIsBack) {
                                 break;
                             }
 
@@ -230,31 +401,33 @@ public class EmvTestActivity extends Activity {
                                 }
                             });
 
-                            ret = PosApiHelper.getInstance().IccCheck((byte)0);
+                            ret = PosApiHelper.getInstance().IccCheck((byte) 0);
+
+                            Log.e("liuhao", "IccCheck ret = " + ret);
                             if (ret == 0) {
-                                mCardType=1;
+                                mCardType = 1;
                                 break;
                             }
 
                             ret = PosApiHelper.getInstance().PiccOpen();
                             if (0 == ret) {
                                 ret = PosApiHelper.getInstance().PiccCheck(picc_mode, cardtype, serialNo);
-                                if(ret==0){
-                                    mCardType=2;
+                                if (ret == 0) {
+                                    mCardType = 2;
                                     break;
                                 }
                             }
                         }
 
-                        if(mCardType==-1){
+                        if (mCardType == -1) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(bIsBack){
+                                    if (bIsBack) {
                                         tvEmvMsg.setText(getResources().getText(R.string.emvTips));
-                                    }else {
+                                    } else {
                                         tvEmvMsg.setText("timeOut~");
-                                        Toast.makeText(EmvTestActivity.this,"Card timeOut~",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(EmvTestActivity.this, "Card timeOut~", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
@@ -277,6 +450,9 @@ public class EmvTestActivity extends Activity {
 
                         emvcoHelper.EmvEnvParaInit();
                         emvcoHelper.EmvSaveTermParas(TermParabuf, TermParabuf.length);
+
+                        emvcoHelper.EmvAddOneAIDS(aidTmp, aidTmp.length);
+
                         emvcoHelper.EmvAddOneAIDS(aid1buf, aid1buf.length);
                         emvcoHelper.EmvKernelInit(0, 3);
                         emvcoHelper.EmvAddOneCAPK(capk1buf, capk1buf.length);
@@ -309,34 +485,34 @@ public class EmvTestActivity extends Activity {
                             });
                         }
 
-                        byte [] data55=new byte[256];
-                        int len55=emvcoHelper.EmvPrePare55Field(data55, data55.length);
-                        Log.e("EMV_55LOG","len55 :" +len55);
+                        byte[] data55 = new byte[256];
+                        int len55 = emvcoHelper.EmvPrePare55Field(data55, data55.length);
+                        Log.e("EMV_55LOG", "len55 :" + len55);
                         for (int i = 0; i < data55.length; i++) {
-                            Log.e("EMV_55LOG", "i = "+i+"  " + ByteUtil.byteToHexString(data55[i] /*& 0xFF*/));
+                            Log.e("EMV_55LOG", "i = " + i + "  " + ByteUtil.byteToHexString(data55[i] /*& 0xFF*/));
                         }
 
                         TagCardNo_len = emvcoHelper.EmvGetTagData(CardNoData, 56, TagCardNo);
                         for (int i = 0; i < TagCardNo_len; i++) {
-                            Log.e("CardNoData", "i = "+i+"  " + CardNoData[i]);
+                            Log.e("CardNoData", "i = " + i + "  " + CardNoData[i]);
                             Tag5A_data += ByteUtil.byteToHexString(CardNoData[i] /*& 0xFF*/);
                         }
 
-                        if(TagCardNo_len/2!=0){
-                            Tag5A_data=Tag5A_data.substring(0,TagCardNo_len*2-1);
+                        if (TagCardNo_len / 2 != 0) {
+                            Tag5A_data = Tag5A_data.substring(0, TagCardNo_len * 2 - 1);
                         }
 
                         Log.e("Tag55", "-Tag5A_data=----" + Tag5A_data);
 //
                         PinData_len = emvcoHelper.EmvGetTagData(PinData, 56, TagPIN);
 
-                        String TagPin_data="";
+                        String TagPin_data = "";
                         for (int i = 0; i < PinData_len; i++) {
-                            Log.e("EMV PinData", "i = "+i+"  " + PinData[i]);
+                            Log.e("EMV PinData", "i = " + i + "  " + PinData[i]);
                             TagPin_data += ByteUtil.byteToHexString(PinData[i] /*& 0xFF*/);
                         }
 //                        final String TagPin_data = new String(PinData, 0, PinData_len);
-                        final String finalTagPin_data =ByteUtil.hexStr2Str(TagPin_data);
+                        final String finalTagPin_data = ByteUtil.hexStr2Str(TagPin_data);
 
                         runOnUiThread(new Runnable() {
                             public void run() {
@@ -350,15 +526,17 @@ public class EmvTestActivity extends Activity {
                         break;
                     case TYPE_PIN_BLOCK:
 
-                        int pinkey_n = 1;
-                        byte[] card_no = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
-                        byte[] mode = new byte[]{0};
+                        int pinkey_n = 0;
+//                        byte[] card_no = "123456789012345678".getBytes();
+                        byte[] card_no = new byte[]{4,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1};
+                        byte[] mode = new byte[]{1};
                         byte[] pin_block = new byte[8];
-                        //emvcoHelper.EmvKeyPadInit(EmvTestActivity.this);
+//                        emvcoHelper.EmvKeyPadInit(EmvTestActivity.this);
+                        Log.e("VPOS LIUHAO","card_no len ="+card_no.length);
                         ret = emvcoHelper.EmvGetPinBlock(EmvTestActivity.this, pinkey_n, card_no, mode, pin_block);
                         //String pin_block00 = new String(pin_block, 0, 8);
                         if (ret != 0) {
-                            Log.e(TAG,"PinBlock ret :" +ret);
+                            Log.e(TAG, "PinBlock ret :" + ret);
                             m_bThreadFinished = true;
                             return;
                         }
@@ -385,29 +563,31 @@ public class EmvTestActivity extends Activity {
 //                emvcoHelper.EmvKeyPadInit(EmvTestActivity.this);
                         ret = emvcoHelper.EmvShowKeyPad(EmvTestActivity.this, pwd);
 
+//                        KeyPad.CloseKeyDlg();
+
                         PinData_len2 = emvcoHelper.EmvGetTagData(PinData2, 56, TagPIN2);
 
-                        Log.e("liuhaoBDTag",PinData_len2+"");
+                        Log.e("liuhaoBDTag", PinData_len2 + "");
 
-                        String TagPin_data2="";
+                        String TagPin_data2 = "";
                         for (int i = 0; i < PinData_len2; i++) {
-                            Log.e("EMV PinData", "i = "+i+"  " + PinData2[i]);
+                            Log.e("EMV PinData", "i = " + i + "  " + PinData2[i]);
                             TagPin_data2 += ByteUtil.byteToHexString(PinData2[i] /*& 0xFF*/);
                         }
 //                        final String TagPin_data = new String(PinData, 0, PinData_len);
-                        final String finalTagPin_data2 =ByteUtil.hexStr2Str(TagPin_data2);
+                        final String finalTagPin_data2 = ByteUtil.hexStr2Str(TagPin_data2);
 
-                        Log.e("liuhaoBDTag",finalTagPin_data2);
+                        Log.e("liuhaoBDTag", finalTagPin_data2);
 
                         if (ret != 0) {
-                            Log.e(TAG,"ShowPad ret :" +ret);
+                            Log.e(TAG, "ShowPad ret :" + ret);
                             m_bThreadFinished = true;
                             return;
                         }
 
                         final String strPwd = ByteUtil.bytesToString(pwd);
 
-                        if ((!TextUtils.isEmpty(strPwd))&&strPwd.trim().length()>0) {
+                        if ((!TextUtils.isEmpty(strPwd)) && strPwd.trim().length() > 0) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -430,6 +610,46 @@ public class EmvTestActivity extends Activity {
         }
     }
 
+
+    /**
+     * 字符串转换成十六进制字符串
+     * @param  str 待转换的ASCII字符串
+     * @return String 每个Byte之间空格分隔，如: [61 6C 6B]
+     */
+    public static String str2HexStr(String str)
+    {
+
+        char[] chars = "0123456789ABCDEF".toCharArray();
+        StringBuilder sb = new StringBuilder("");
+        byte[] bs = str.getBytes();
+        int bit;
+
+        for (int i = 0; i < bs.length; i++)
+        {
+            bit = (bs[i] & 0x0f0) >> 4;
+            sb.append(chars[bit]);
+            bit = bs[i] & 0x0f;
+            sb.append(chars[bit]);
+            sb.append(' ');
+        }
+        return sb.toString().trim();
+    }
+
+    public void closeLed()  {
+        try {
+            PosApiHelper.getInstance().SysSetLedMode(1,0);
+            Thread.sleep(20);
+            PosApiHelper.getInstance().SysSetLedMode(2,0);
+            Thread.sleep(20);
+            PosApiHelper.getInstance().SysSetLedMode(3,0);
+            Thread.sleep(20);
+            PosApiHelper.getInstance().SysSetLedMode(4,0);
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -441,9 +661,9 @@ public class EmvTestActivity extends Activity {
         }
 
         //add by liuhao 20180302
-        if(mIBackFinish!=null){
+        if (mIBackFinish != null) {
             mIBackFinish.isBack();
-            bIsBack=true;
+            bIsBack = true;
         }
 
         //Close Emv Com
@@ -514,6 +734,7 @@ public class EmvTestActivity extends Activity {
 
 
     private static final String DISABLE_FUNCTION_LAUNCH_ACTION = "android.intent.action.DISABLE_FUNCTION_LAUNCH";
+
     // disable the power key when the device is boot from alarm but not ipo boot
     private void disableFunctionLaunch(boolean state) {
         Intent disablePowerKeyIntent = new Intent(DISABLE_FUNCTION_LAUNCH_ACTION);

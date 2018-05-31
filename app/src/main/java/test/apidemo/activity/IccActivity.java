@@ -89,28 +89,39 @@ public class IccActivity extends Activity implements View.OnClickListener {
 
     }
 
-    void tmp(String str){
-        str = "1212";
 
-//        Settings.Secure.setLocationProviderEnabled()
-    }
+    String strInfo = "";
 
     void startTestIcc(byte slot) {
-        tv_msg.setText("Test Icc...");
         ret = 1;
         if (slot == 0) {
             ret = posApiHelper.IccCheck(slot);
             if (ret != 0) {
-                tv_msg.setText("Check Failed");
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        tv_msg.setText("Check Failed");
+                    }
+                });
                 Log.e(TAG, "Lib_IccCheck failed!");
-                return;
+                //add by liuhao for 0529
+           //     posApiHelper.IccClose(slot);
+
+                return ;
             }
         }
 
         ret = posApiHelper.IccOpen(slot, vcc_mode, ATR);
         if (ret != 0) {
-            tv_msg.setText("Open Failed");
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    tv_msg.setText("Open Failed");
+                }
+            });
             Log.e(TAG, "IccOpen failed!");
+
+            //add by liuhao for 0529
+//          posApiHelper.IccClose(slot);
+
             return;
         }
 
@@ -151,13 +162,22 @@ public class IccActivity extends Activity implements View.OnClickListener {
 
         ret = posApiHelper.IccCommand(slot, ApduSend.getBytes(), resp);
         if (0 == ret) {
-            String strInfo = "";
             ApduResp = new APDU_RESP(resp);
             strInfo = ByteUtil.bytearrayToHexString(ApduResp.DataOut, ApduResp.LenOut) + "SWA:"
                     + ByteUtil.byteToHexString(ApduResp.SWA) + " SWB:" + ByteUtil.byteToHexString(ApduResp.SWB);
-            tv_msg.setText(strInfo);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tv_msg.setText(strInfo);
+                }
+            });
         } else {
-            tv_msg.setText("Command Failed");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tv_msg.setText("Command Failed");
+                }
+            });
             Log.e(TAG, "Icc_Command failed!");
         }
 
@@ -170,20 +190,87 @@ public class IccActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    @Override
+
+    ICC_Thread IccThread = null;
+
     public void onClick(View v) {
+
+        if (null != IccThread && !IccThread.isThreadFinished()) {
+            Log.e("onClickTest", "return return");
+            return;
+        }
+
+        tv_msg.setText("");
+
         switch (v.getId()){
             case R.id.button_SingleTest:
                 if (isIccChecked) {
-                    startTestIcc((byte) 0);
+                    IccThread = new ICC_Thread((byte) 0);
+                    IccThread.start();
                 }
                 if (isPsam1Checked) {
-                    startTestIcc((byte) 1);
+                    IccThread = new ICC_Thread((byte) 1);
+                    IccThread.start();
                 }
                 if (isPsam2Checked) {
-                    startTestIcc((byte) 2);
+                    IccThread = new ICC_Thread((byte) 2);
+                    IccThread.start();
                 }
                 break;
         }
+    }
+
+    private boolean m_bThreadFinished = false;
+    public class ICC_Thread extends Thread {
+
+        byte testMode;
+        private int iWaitSecond = 1;
+
+        public boolean isThreadFinished() {
+            return m_bThreadFinished;
+        }
+
+        public ICC_Thread(byte mode) {
+            testMode = mode;
+        }
+
+        byte slot = 0;
+
+        public void run() {
+
+            synchronized (this) {
+                m_bThreadFinished = false;
+
+                startTestIcc(testMode);
+
+                m_bThreadFinished = true;
+
+            }
+            Log.e("ICCThread[ run ]", "run() end");
+//            return;
+        }
+    }
+
+
+    public void closeLed()  {
+        try {
+            PosApiHelper.getInstance().SysSetLedMode(1,0);
+            Thread.sleep(20);
+            PosApiHelper.getInstance().SysSetLedMode(2,0);
+            Thread.sleep(20);
+            PosApiHelper.getInstance().SysSetLedMode(3,0);
+            Thread.sleep(20);
+            PosApiHelper.getInstance().SysSetLedMode(4,0);
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        //add by liuhao 0529 close led
+        closeLed();
     }
 }

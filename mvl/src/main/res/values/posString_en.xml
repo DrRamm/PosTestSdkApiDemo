@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="en_enterAmount">Enter Amount</string>
+    <string name="en_quickPay">Quick Pay</string>
+    <string name="en_transAmtExceed">Trans Amt Exceed</string>
+    <string name="en_tryOtherWay">Try Other Interface</string>
+    <string name="en_insertSwipeCard">Wave Card</string>
+    <string name="en_transAmt">Trans Amt</string>
+    <string name="en_transProcessing">Processing</string>
+    <string name="en_plsRemoveCard">Pls Remove Card</string>
+    <string name="en_transApproved">Approved</string>
+    <string name="en_transDeclined">Declined</string>
+    
+    <string name="en_balance">Balance</string>
+    <string name="en_qpbocTest">qPBOC Level2 Demo</string>
+    <string name="en_dash">=================</string>
+    <string name="en_queryBalance">Query Balance</string>
+    <string name="en_checkTransLog">Check Trans Log</string>
+    <string name="en_multiCard">Pls present one card</string>
+    <string name="en_processing">Processing......</string>
+    <string name="en_transFail">Trans Failed</string>
+    <string name="en_amount">Amt:</string>
+    
+    <string name="en_setup">SETUP</string>
+    <string name="en_transType">Trans Type</string>
+    <string name="en_onlinePinTrans">Online PIN Trans</string>
+    <string name="en_offlineTrans">offline Trans</string>
+
+</resources>

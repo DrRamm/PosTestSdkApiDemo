@@ -87,13 +87,13 @@ public class PiccActivity extends Activity implements View.OnClickListener {
 
         Log.e("nfc", "heyp nfc Picc_Open start!");
         byte[] NfcData_Len = new byte[5];
-        byte[] Technology = new byte[25];
+        final byte[] Technology = new byte[25];
         byte[] NFC_UID = new byte[56];
         byte[] NDEF_message = new byte[500];
 
         int ret = posApiHelper.PiccNfc(NfcData_Len, Technology, NFC_UID, NDEF_message);
 
-        int TechnologyLength = NfcData_Len[0] & 0xFF;
+        final int TechnologyLength = NfcData_Len[0] & 0xFF;
         int NFC_UID_length = NfcData_Len[1] & 0xFF;
         int NDEF_message_length = (NfcData_Len[3] & 0xFF) + (NfcData_Len[4] & 0xFF);
         byte[] NDEF_message_data = new byte[NDEF_message_length];
@@ -111,13 +111,29 @@ public class PiccActivity extends Activity implements View.OnClickListener {
             posApiHelper.SysBeep();
             //successCount ++;
             if (!TextUtils.isEmpty(NDEF_str)) {
-                textViewMsg.setText("TYPE: " + new String(Technology).substring(0, TechnologyLength) + "\n"
+
+                final String tmpStr = "TYPE: " + new String(Technology).substring(0, TechnologyLength) + "\n"
                         + "UID: " + ByteUtil.bytearrayToHexString(NFC_UID_data, NFC_UID_data.length) + "\n"
-                        + NDEF_str);
+                        + NDEF_str;
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        textViewMsg.setText(tmpStr);
+                    }
+                });
+
             } else {
-                textViewMsg.setText("TYPE: " + new String(Technology).substring(0, TechnologyLength) + "\n"
+                final String strMsg = "TYPE: " + new String(Technology).substring(0, TechnologyLength) + "\n"
                         + "UID: " + ByteUtil.bytearrayToHexString(NFC_UID_data, NFC_UID_data.length) + "\n"
-                        + NDEF_str);
+                        + NDEF_str;
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        textViewMsg.setText(strMsg);
+                    }
+                });
 //                textViewMsg.setText("No data ~");
             }
 
@@ -125,7 +141,6 @@ public class PiccActivity extends Activity implements View.OnClickListener {
         }
         return ret;
     }
-
 
     public void startPiccTest() {
 
@@ -228,13 +243,52 @@ public class PiccActivity extends Activity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btnNfc:
 
-                Log.e("liuhao ","NFC");
+                if (null != piccThread && !piccThread.isThreadFinished()) {
+                    Log.e("onClickTest", "return return");
+                    return;
+                }
+
+                piccThread = new PICC_Thread();
+                piccThread.start();
+
+                bIsFinish = false;
+
+                break;
+
+            case R.id.btnPiccTest:
+                startPiccTest();
+                break;
+        }
+    }
+
+    PICC_Thread piccThread = null;
+    private boolean m_bThreadFinished = false;
+
+    public class PICC_Thread extends Thread {
+
+        public boolean isThreadFinished() {
+            return m_bThreadFinished;
+        }
+
+        public void run() {
+
+            synchronized (this) {
+                m_bThreadFinished = false;
+
                 int ret = -1;
                 long time = System.currentTimeMillis();
-                while (System.currentTimeMillis() < time + 1500) {
-                    textViewMsg.setText(getResources().getString(R.string.wait_time));
+                while (System.currentTimeMillis() < time + 10000) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textViewMsg.setText(getResources().getString(R.string.wait_time));
+                        }
+                    });
+                    Log.e("liuhao ", "NFC = " + System.currentTimeMillis());
 
                     if (bIsFinish) {
+                        Log.e("liuhao ", "NFC = " + "BACK");
+                        m_bThreadFinished = true;
                         break;
                     }
 
@@ -244,13 +298,8 @@ public class PiccActivity extends Activity implements View.OnClickListener {
                     }
                 }
 
-                bIsFinish = false;
-
-                break;
-
-            case R.id.btnPiccTest:
-                startPiccTest();
-                break;
+                m_bThreadFinished = true;
+            }
         }
     }
 
